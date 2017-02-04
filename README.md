@@ -19,7 +19,7 @@ the to internals to mount the battery, electronics and sensor.
 
 ## Hardware
 
-The Schematic and PCB are designed in KiCAD. The board has not yet been fully tested
+The Schematic and PCB are designed in KiCAD. The board has not yet been fully tested. In fact the board has several flaws, some of which do not seem to be problematic, but one that caused me a long headache. The pin called CH_PD on my baord needed to be pulled high. I have tacked a 4.7k resistor to the back of the board. Without this, the board would not start. Oddly though, in all of the previous ESP8266 designs I have worked on (mostly on vero or breadboard) I have not had to pull this pin high at all. Please be __warned__ if you want to use my design.
 
 ## Code
 
