@@ -3,7 +3,7 @@
   (general
     (links 35)
     (no_connects 0)
-    (area 118.059999 73.609999 149.275001 116.890001)
+    (area 118.059999 60.96 162.560001 117.290001)
     (thickness 1.6)
     (drawings 13)
     (tracks 75)
@@ -15,7 +15,7 @@
   (page A4)
   (title_block
     (title "Environment Monitor")
-    (date 2017-02-19)
+    (date 2017-02-20)
     (rev V1.4)
     (company "Solderpad Hardware License version 0.51")
     (comment 1 "Contact: alanslists@gmail.com")
