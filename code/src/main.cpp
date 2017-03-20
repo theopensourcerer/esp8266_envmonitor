@@ -104,6 +104,12 @@ void setup_wifi() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    if (millis() - startMills > 15000) {
+      if (DEBUG_PRINT) {
+        Serial.println("Taken too long to connect to WiFi. Going to sleep");
+        goingToSleep();
+      }
+    }
   }
 
   if (DEBUG_PRINT) {
