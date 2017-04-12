@@ -38,6 +38,7 @@ This header must be included in any derived code or copies of the code.
 #include <PubSubClient.h>
 #include <BME280I2C.h>
 #include <Wire.h>
+#include <ArduinoJson.h>
 
 // Not sure why this is necessary but the BME280I2C won't compile without it.
 #include <SPI.h>
@@ -63,9 +64,7 @@ unsigned long subMills = 0;
 void readBME();
 void setup_wifi();
 void reconnect();
-void publishEnv();
-void publishTech();
-bool sendmqttMsg(const char* topictosend, String payload);
+void publishJSON();
 void goingToSleep();
 // End Prototypes
 
@@ -107,8 +106,8 @@ void setup_wifi() {
     if (millis() - startMills > 15000) {
       if (DEBUG_PRINT) {
         Serial.println("Taken too long to connect to WiFi. Going to sleep");
-        goingToSleep();
       }
+      goingToSleep();
     }
   }
 
@@ -131,14 +130,41 @@ void loop() {
     if (DEBUG_PRINT) {
       Serial.print("Read BME280. Publish message: ");
     }
-    publishEnv();
+    publishJSON();
   }
-
-  if(vcc) {
-    publishTech();
-  }
-
   goingToSleep();
+}
+
+void publishJSON() {
+  if (client.connected()) {
+    StaticJsonBuffer<150> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    JsonArray& payload = root.createNestedArray("payload");
+    JsonObject& data = payload.createNestedObject();
+    data["sensorid"] = esp_id;
+    data["temp"] = temp;
+    data["hum"] = hum;
+    data["pres"] = pres;
+    data["vcc"] = vcc/1000;
+    data["cycletime"] = millis() - startMills;
+    if (DEBUG_PRINT) {
+      Serial.print("Sending payload: ");
+      root.prettyPrintTo(Serial);
+    }
+
+    char buffer[150];
+    root.printTo(buffer, sizeof(buffer));
+    if (client.publish(TOPIC, buffer));
+      if (DEBUG_PRINT) {
+        Serial.print("Published OK  --> ");
+        Serial.println(millis() - startMills);
+      }
+    } else {
+      if (DEBUG_PRINT) {
+        Serial.print("Publish failed --> ");
+        Serial.println(millis() - startMills);
+      }
+    }
 }
 
 void reconnect() {
@@ -164,26 +190,6 @@ void reconnect() {
   }
 }
 
-void publishEnv() {
-  String payload = "Temp: ";
-  payload += temp;
-  payload += " Humi: ";
-  payload += hum;
-  payload += " Pres: ";
-  payload += pres;
-  sendmqttMsg(ENV_TOPIC, payload);
-}
-
-void publishTech() {
-  String payload = "ESPID: ";
-  payload += esp_id;
-  payload += " VCC: ";
-  payload += vcc/1000;
-  payload += " Time: ";
-  payload += millis() - startMills;
-  sendmqttMsg(TECH_TOPIC, payload);
-}
-
 void readBME() {
   bme.read(pres, temp, hum, pressureUnit, metric);
   if (DEBUG_PRINT) {
@@ -193,41 +199,6 @@ void readBME() {
     Serial.print(hum);
     Serial.print(" Pressure: ");
     Serial.print(pres);
-  }
-}
-
-bool sendmqttMsg(const char* topictosend, String payload) {
-  if (client.connected()) {
-    if (DEBUG_PRINT) {
-      Serial.print("Sending payload: ");
-      Serial.print(payload);
-    }
-
-    unsigned int msg_length = payload.length();
-
-    if (DEBUG_PRINT) {
-      Serial.print(" Length: ");
-      Serial.println(msg_length);
-    }
-
-    byte* p = (byte*)malloc(msg_length);
-    memcpy(p, (char*) payload.c_str(), msg_length);
-
-    if ( client.publish(topictosend, p, msg_length, 1)) {
-      if (DEBUG_PRINT) {
-        Serial.print("Published OK  --> ");
-        Serial.println(millis() - startMills);
-      }
-      free(p);
-      return 1;
-    } else {
-      if (DEBUG_PRINT) {
-        Serial.print("Publish failed --> ");
-        Serial.println(millis() - startMills);
-      }
-      free(p);
-      return 0;
-    }
   }
 }
 

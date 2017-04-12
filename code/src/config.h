@@ -34,19 +34,18 @@ This header must be included in any derived code or copies of the code.
 */
 
 // Debugging
-#define DEBUG_PRINT 1
+#define DEBUG_PRINT 0
 
 // Change these to suit your own application and network.
 const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
-const char* MQTT_SERVER = "";
+const char* MQTT_SERVER = "192.168.1.2";
 
 // Topics (Environment and VCC)
-const char* ENV_TOPIC = "PT/Env";
-const char* TECH_TOPIC = "PT/Tech";
+const char* TOPIC = "PT/Env";
 
-// Deep Sleep (uSec) Debug = 10000000 (10 Seconds). Production: 900000000 (15 minutes)
-long deep_sleep = 10000000;
+// Deep Sleep (uSec) Debug = 10000000 (10 Seconds). Production: 600000000 (10 minutes)
+long deep_sleep = 600000000;
 
 // Deep Sleep mode.
 #define DS_MODE WAKE_RF_DEFAULT
