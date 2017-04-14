@@ -49,7 +49,7 @@ ADC_MODE(ADC_VCC);
 // BME280
 bool metric = true; // Want 'C not 'F
 float temp(NAN), hum(NAN), pres(NAN);
-uint8_t pressureUnit(3);
+uint8_t pressureUnit(1); // unit: B000 = Pa, B001 = hPa, B010 = Hg, B011 = atm, B100 = bar, B101 = torr, B110 = N/m^2, B111 = psi
 
 // ESP
 float vcc;
@@ -137,14 +137,14 @@ void loop() {
 
 void publishJSON() {
   if (client.connected()) {
-    StaticJsonBuffer<150> jsonBuffer;
+    StaticJsonBuffer<175> jsonBuffer;
     JsonObject& root = jsonBuffer.createObject();
     JsonArray& payload = root.createNestedArray("payload");
     JsonObject& data = payload.createNestedObject();
-    data["sensorid"] = esp_id;
+    data["sensorid"] = SENSORNAME;
     data["temp"] = temp;
     data["hum"] = hum;
-    data["pres"] = pres;
+    data["pres"] = String(pres, 2);
     data["vcc"] = vcc/1000;
     data["cycletime"] = millis() - startMills;
     if (DEBUG_PRINT) {
@@ -199,6 +199,7 @@ void readBME() {
     Serial.print(hum);
     Serial.print(" Pressure: ");
     Serial.print(pres);
+    Serial.println();
   }
 }
 

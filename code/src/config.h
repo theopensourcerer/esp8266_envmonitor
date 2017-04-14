@@ -41,7 +41,9 @@ const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
 const char* MQTT_SERVER = "192.168.1.2";
 
-// Topics (Environment and VCC)
+// SensorName
+const char* SENSORNAME = "ptintenv";
+// Topic
 const char* TOPIC = "PT/Env";
 
 // Deep Sleep (uSec) Debug = 10000000 (10 Seconds). Production: 600000000 (10 minutes)
