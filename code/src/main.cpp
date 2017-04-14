@@ -45,20 +45,15 @@ This header must be included in any derived code or copies of the code.
 
 // Set up ESP8266 ADC for voltage read
 ADC_MODE(ADC_VCC);
+float vcc;
 
 // BME280
 bool metric = true; // Want 'C not 'F
 float temp(NAN), hum(NAN), pres(NAN);
 uint8_t pressureUnit(1); // unit: B000 = Pa, B001 = hPa, B010 = Hg, B011 = atm, B100 = bar, B101 = torr, B110 = N/m^2, B111 = psi
 
-// ESP
-float vcc;
-const uint32_t esp_id = ESP.getChipId();
-
 // Timer placeholders
 unsigned long startMills = 0;
-unsigned long wifiMills = 0;
-unsigned long subMills = 0;
 
 // Function Prototypes
 void readBME();
@@ -72,10 +67,6 @@ void goingToSleep();
 WiFiClient espClient;
 PubSubClient client(espClient);
 BME280I2C bme;
-
-long lastMsg = 0;
-char msg[50];
-int value = 0;
 
 void setup() {
   startMills = millis();
