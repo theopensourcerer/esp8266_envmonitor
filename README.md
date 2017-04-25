@@ -4,8 +4,8 @@
 * [Summary](#summary)
 * [Case](#case)
 * [Hardware](#hardware)
-* [Code] (#code)
-* [License] (#license)
+* [Code](#code)
+* [License](#license)
 
 ## Summary
 This is a personal project to build an Environment Monitor for my Polytunnel where I mostly grow chillies.
